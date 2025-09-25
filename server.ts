@@ -2,81 +2,59 @@ import express from "express";
 import { z } from "zod";
 
 const app = express();
-
+//MIDDLEWARE
 app.use(express.json());
-
-const PORT = 3000;
-
+const PORT: number = 3000;
+//RUN SERVER
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
 
-const BookSchema = z.array(
-  z.object({
-    id: z.number().positive(),
-    title: z.string().min(3),
-    author: z.string().min(3),
-  })
-);
-const BookObjectSchema = z.object({
+const PastrySchema = z
+  .array(
+    z.object({
+      id: z.number().positive(),
+      name: z.string().min(3),
+      price: z.number().positive(),
+    })
+  )
+  .refine(
+    (pastry_array) => {
+      //REQUIRE PASTRY IDS TO BE UNIQUE
+      const ids: number[] = pastry_array.map((p) => p.id);
+      const uniqueId = new Set(ids);
+      return ids.length === uniqueId.size;
+    },
+    { message: "Pastry IDs must be unique" }
+  );
+
+const PastryObjectSchema = z.object({
   id: z.number().positive(),
-  title: z.string().min(3),
-  author: z.string().min(3),
+  name: z.string().min(3),
+  price: z.number().positive(),
 });
 
-type Books = z.infer<typeof BookSchema>;
-type BookObject = z.infer<typeof BookObjectSchema>;
+type Pastrys = z.infer<typeof PastrySchema>;
+type PastryObject = z.infer<typeof PastryObjectSchema>;
 
-let book: Books = [
+let bakery: Pastrys = [
   {
     id: 1,
-    title: "1984",
-    author: "George Orwell",
+    name: "Kanelbulle",
+    price: 2,
   },
   {
     id: 2,
-    title: "The Hobbit",
-    author: "J.R.R. Tolkien",
+    name: "Semla",
+    price: 3,
+  },
+  {
+    id: 2,
+    name: "Kladdkaka",
+    price: 3,
   },
 ];
 
-app.get("/books", (req, res) => {
-  res.json(book);
-});
-
-app.post("/books", (req, res) => {
-  const newBook: BookObject = {
-    id: book.length + 1,
-    title: req.body.title,
-    author: req.body.author,
-  };
-  book.push(newBook);
-  res.send({
-    message: "book added successfully!",
-    latest: newBook,
-  });
-});
-
-app.put("/books/:id", (req, res) => {
-  const bookId: number = parseInt(req.params.id);
-  const found = book.find((b) => b.id === bookId);
-  if (!found) {
-    return res.status(404).send({
-      message: "Book not found!",
-    });
-  }
-  found.title = req.body.title || found.title;
-  found.author = req.body.author || found.author;
-  res.send({
-    message: "Book updated successfully!",
-    found,
-  });
-});
-
-app.delete("/books/:id", (req, res) => {
-  const bookId = parseInt(req.params.id);
-  book = book.filter((b) => b.id !== bookId);
-  res.send({
-    message: "Book deleted successfully!",
-  });
+app.get("/pastry", (req, res) => {
+  res.send(bakery);
 });
