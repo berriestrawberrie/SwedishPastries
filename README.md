@@ -130,3 +130,36 @@ Updates an existing pastry by ID.
   ```
 
 ---
+
+### DELETE `/pastry/:id`
+
+Deletes a pastry from the bakery inventory by ID.
+
+- **URL**: `http://localhost:3000/pastry/:id`
+- **Method**: `DELETE`
+- **Path Parameter**:
+
+  - `:id` — The ID of the pastry to delete
+
+- **Success Response**:
+
+  ```json
+  {
+    "message": "Pastry deleted successfully!",
+    "data": [
+      /* updated bakery array */
+    ]
+  }
+  ```
+
+- **Error Response** (`404`):
+  ```json
+  {
+    "message": "Pastry not found :(",
+    "data": [
+      /* no pastries deleted */
+    ]
+  }
+  ```
+
+---

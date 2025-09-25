@@ -85,3 +85,19 @@ app.put("/pastry/:id", (req, res) => {
     bakery,
   });
 });
+
+app.delete("/pastry/:id", (req, res) => {
+  const pastryId = parseInt(req.params.id);
+  const freshBakery: Pastrys = bakery.filter((p) => p.id !== pastryId);
+
+  if (freshBakery.length === bakery.length) {
+    return res.status(404).send({
+      message: "Pastry not found :( no pastries deleted",
+    });
+  }
+  bakery = freshBakery;
+  res.status(200).send({
+    message: "Pastry deleted successfully!",
+    bakery,
+  });
+});
