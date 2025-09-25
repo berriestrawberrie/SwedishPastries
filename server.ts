@@ -51,7 +51,7 @@ let bakery: Pastrys = [
   {
     id: 2,
     name: "Kladdkaka",
-    price: 3,
+    price: 4,
   },
 ];
 
