@@ -19,23 +19,13 @@ The system uses Zod to validate pastry objects. Each pastry must include:
 - `price`: A positive number (only items sold for profit)
 
 ```ts
-const PastrySchema = z
-  .array(
-    z.object({
-      id: z.number().positive(),
-      name: z.string().min(3),
-      price: z.number().positive(), // Only items sold for profit
-    })
-  )
-  .refine(
-    (items) => {
-      const ids = items.map((p) => p.id);
-      return new Set(ids).size === ids.length;
-    },
-    {
-      message: "Pastry IDs must be unique",
-    }
-  );
+const PastrySchema = z.array(
+  z.object({
+    id: z.number().positive(),
+    name: z.string().min(3),
+    price: z.number().positive(), // Only items sold for profit
+  })
+);
 ```
 
 ---
@@ -78,5 +68,28 @@ Returns a JSON array of three sample pastries:
   { "id": 3, "name": "Kladdkaka", "price": 4 }
 ]
 ```
+
+### POST `/pastry`
+
+Adds a new pastry to the bakery inventory.
+
+- **URL**: `http://localhost:3000/pastry`
+- **Method**: `POST`
+- **Request Body** (JSON):
+  ```json
+  {
+    "name": "string",
+    "price": number > 0
+  }
+  ```
+- **Success Response**:
+  ```json
+  {
+    "message": "New pastry added yum!",
+     [ /* updated bakery array */ ]
+  }
+  ```
+
+---
 
 ---

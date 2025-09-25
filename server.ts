@@ -10,23 +10,13 @@ app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
 
-const PastrySchema = z
-  .array(
-    z.object({
-      id: z.number().positive(),
-      name: z.string().min(3),
-      price: z.number().positive(),
-    })
-  )
-  .refine(
-    (pastry_array) => {
-      //REQUIRE PASTRY IDS TO BE UNIQUE
-      const ids: number[] = pastry_array.map((p) => p.id);
-      const uniqueId = new Set(ids);
-      return ids.length === uniqueId.size;
-    },
-    { message: "Pastry IDs must be unique" }
-  );
+const PastrySchema = z.array(
+  z.object({
+    id: z.number().positive(),
+    name: z.string().min(3),
+    price: z.number().positive(),
+  })
+);
 
 const PastryObjectSchema = z.object({
   id: z.number().positive(),
@@ -49,12 +39,32 @@ let bakery: Pastrys = [
     price: 3,
   },
   {
-    id: 2,
+    id: 3,
     name: "Kladdkaka",
     price: 4,
   },
 ];
 
 app.get("/pastry", (req, res) => {
-  res.send(bakery);
+  res.status(200).send(bakery);
+});
+
+app.post("/pastry", (req, res) => {
+  try {
+    const newPastry: PastryObject = {
+      id: bakery.length + 1,
+      name: req.body.name,
+      price: req.body.price,
+    };
+    bakery.push(newPastry);
+    res.status(201).send({
+      message: "New pastry added yum!",
+      bakery,
+    });
+  } catch (error) {
+    res.status(400).send({
+      message: "Something went wrong adding pastry to the bakery",
+      error: error,
+    });
+  }
 });
