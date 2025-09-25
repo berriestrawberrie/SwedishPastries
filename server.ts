@@ -68,3 +68,20 @@ app.post("/pastry", (req, res) => {
     });
   }
 });
+
+app.put("/pastry/:id", (req, res) => {
+  const pastryId: number = parseInt(req.params.id);
+  const found = bakery.find((p) => p.id === pastryId);
+  if (!found) {
+    return res.status(404).send({
+      message: "Pastry not found :(",
+    });
+  }
+  found.name = req.body.name || found.name;
+  found.price = req.body.price || found.price;
+
+  res.status(200).send({
+    message: `Pastry #${pastryId} has been updated`,
+    bakery,
+  });
+});

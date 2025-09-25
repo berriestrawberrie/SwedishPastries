@@ -92,4 +92,41 @@ Adds a new pastry to the bakery inventory.
 
 ---
 
+### PUT `/pastry/:id`
+
+Updates an existing pastry by ID.
+
+- **URL**: `http://localhost:3000/pastry/:id`
+- **Method**: `PUT`
+- **Path Parameter**:
+
+  - `:id` — The ID of the pastry to update
+
+- **Request Body** (JSON):
+
+  ```json
+  {
+    "name": "string",      // optional
+    "price": number > 0    // optional
+  }
+  ```
+
+- **Success Response**:
+
+  ```json
+  {
+    "message": "Pastry #id has been updated!",
+    "data": [
+      /* updated bakery array */
+    ]
+  }
+  ```
+
+- **Error Response** (`404`):
+  ```json
+  {
+    "message": "Pastry not found :("
+  }
+  ```
+
 ---
